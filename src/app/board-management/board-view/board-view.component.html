@@ -1,0 +1,134 @@
+<div class="m-3">
+    <div class="row mb-2">
+        <div class="col">
+            <h5>InApp Board Sheet</h5>
+        </div>
+        <div class="col text-right">
+            <button type="button" class="btn btn-success" (click)="openModal(content)">
+                Create Task
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="text-primary">ToDo</h5>
+                </div>
+                <div class="card-body"
+                (drop)="drop($event , 'TODO')" (dragover)="allowDrop($event)">
+                    <div *ngFor="let task of boardSheet; let i = index">
+                        <!-- track by -->
+                        <div class="card my-2 bg-info" *ngIf="task.STATUS === 'TODO'" draggable="true"
+                            (dragstart)="drag(task , $event)">
+                            <div class="card-body flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5>
+                                        <span class="font-weight-bold mr-2">#{{task.TASKID}}</span>
+                                        &nbsp;
+                                        <span class="text-dark">{{task.TASKTITLE}}</span>
+                                    </h5>
+                                    <div>
+                                        <strong (click)="editTask(task , content)">&#9998;</strong>
+                                        <strong (click)="removeTask(i)" class="mx-2">&#10008;</strong>
+                                    </div>
+                                  </div>
+                               
+                                <p>{{task.TASKDESCRIPTION}} test</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- todo -->
+        <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="text-warning">In Progress</h5>
+                </div>
+                <div class="card-body"
+                (drop)="drop($event , 'INPROGRESS')" (dragover)="allowDrop($event)">
+                    <div *ngFor="let task of boardSheet; let i = index">
+                        <!-- track by -->
+                        <div class="card my-2 bg-warning" *ngIf="task.STATUS === 'INPROGRESS'"
+                             draggable="true"
+                            (dragstart)="drag(task , $event)">
+                            <div class="card-body flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5>
+                                        <span class="font-weight-bold mr-2">#{{task.TASKID}}</span>
+                                        &nbsp;
+                                        <span class="text-dark">{{task.TASKTITLE}}</span>
+                                    </h5>
+                                    <div>
+                                        <strong (click)="editTask(task , content)">&#9998;</strong>
+                                        <strong (click)="removeTask(i)" class="mx-2">&#10008;</strong>
+                                    </div>
+                                  </div>
+                                <p>{{task.TASKDESCRIPTION}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- In Progress -->
+        <div class="col-sm-12 col-md-6 col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="text-success">Completed</h5>
+                </div>
+                <div class="card-body"
+                (drop)="drop($event , 'COMPLETED')" (dragover)="allowDrop($event)">
+                    <div *ngFor="let task of boardSheet">
+                        <!-- track by -->
+                        <div class="card my-2 bg-success" *ngIf="task.STATUS === 'COMPLETED'"  >
+                            <div class="card-body">
+                                <h5>
+                                    <span class="font-weight-bold mr-2">#{{task.TASKID}}</span>
+                                    &nbsp;
+                                    <span class="text-dark">{{task.TASKTITLE}}</span>
+                                </h5>
+                                <p>{{task.TASKDESCRIPTION}} test</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- Completed -->
+    </div>
+</div>
+<ng-template #content let-modal>
+    <form [formGroup]="taskForm" (ngSubmit)="submitTask()">
+        <div class="modal-header">
+            <h4 class="modal-title">Modal title</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group focused">
+                <label for="input-name">Task Title*</label>
+                <input type="text" id="input-name"
+                    class="form-control" placeholder="Task Title"
+                    formControlName="TASKTITLE"
+                    [ngClass]="{ 'is-invalid': taskSubmit && f.TASKTITLE.errors}">
+                <div *ngIf="taskSubmit && f.TASKTITLE.errors" class="invalid-feedback">
+                    <div *ngIf="f.TASKTITLE.errors.required">Task Title is Required</div>
+                </div>
+            </div>
+            <div class="form-group focused">
+                <label for="input-name">Task Description*</label>
+                <textarea class="form-control" formControlName="TASKDESCRIPTION"
+                [ngClass]="{ 'is-invalid': taskSubmit && f.TASKDESCRIPTION.errors}"
+                rows="3"></textarea>
+                <div *ngIf="taskSubmit && f.TASKDESCRIPTION.errors" class="invalid-feedback">
+                    <div *ngIf="f.TASKDESCRIPTION.errors.required">Task Description required</div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+            <button type="submit" class="btn btn-success">Submit</button>
+          </div>
+    </form>
+  </ng-template>
